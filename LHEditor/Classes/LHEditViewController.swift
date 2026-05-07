@@ -2,7 +2,7 @@ import UIKit
 
 private let screenHeight = UIScreen.main.bounds.height
 
-class LHEditViewController: UIViewController {
+public class LHEditViewController: UIViewController {
     var insertImageEnabled = true
 
     private lazy var tableView: UITableView = {

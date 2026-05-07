@@ -262,13 +262,13 @@ public class LHEditViewController: UIViewController {
 }
 
 extension LHEditViewController: UITableViewDelegate, UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int { 1 }
+    public func numberOfSections(in tableView: UITableView) -> Int { 1 }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         dataArray.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let model = dataArray[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: model.cellReuseIdentifier, for: indexPath)
         cell.selectionStyle = .none
@@ -278,7 +278,7 @@ extension LHEditViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         dataArray[indexPath.row].cellHeight
     }
 }
@@ -433,7 +433,7 @@ extension LHEditViewController: LHEditAccessoryViewDelegate {
 }
 
 extension LHEditViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         let image = (info[.originalImage] as? UIImage)?.lhScaledForEdit() ?? UIImage()
         let model = LHImageEditModel()
         model.image = image
@@ -443,7 +443,7 @@ extension LHEditViewController: UIImagePickerControllerDelegate, UINavigationCon
         picker.dismiss(animated: true)
     }
 
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+    public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
     }
 }

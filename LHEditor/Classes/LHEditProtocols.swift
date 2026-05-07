@@ -7,7 +7,7 @@ public protocol LHEditModelProtocol: AnyObject {
 }
 
 public extension LHEditModelProtocol {
-    public func applyPath(_ path: IndexPath) {}
+    func applyPath(_ path: IndexPath) {}
 }
 
 protocol LHEditCellProtocol: AnyObject {

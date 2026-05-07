@@ -1,0 +1,6 @@
+framework module LHEditor {
+  umbrella header "LHEditor-umbrella.h"
+
+  export *
+  module * { export * }
+}

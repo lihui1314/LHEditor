@@ -1,0 +1,16 @@
+PODS:
+  - LHEditor (0.1.0)
+
+DEPENDENCIES:
+  - LHEditor (from `../`)
+
+EXTERNAL SOURCES:
+  LHEditor:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  LHEditor: 8f39aae5976bb6afd2bd14045f8e711974de6c97
+
+PODFILE CHECKSUM: dcc8c0c0c7f351cba9d9c545bdbc3f81ea5eb9f6
+
+COCOAPODS: 1.16.2

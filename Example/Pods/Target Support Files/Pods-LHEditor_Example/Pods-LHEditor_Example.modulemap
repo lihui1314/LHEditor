@@ -1,0 +1,6 @@
+framework module Pods_LHEditor_Example {
+  umbrella header "Pods-LHEditor_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

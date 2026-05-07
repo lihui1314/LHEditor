@@ -3,6 +3,7 @@ import UIKit
 final class LHImageEditCell: UITableViewCell, LHEditCellProtocol, LHEditCellEditing, LHEditCellTextSeparating, UITextViewDelegate {
     private lazy var imageTextV: LHTextView = {
         let v = LHTextView()
+        v.backgroundColor = EditToolConfig.shared.textFieldBackgroundColor
         v.delegate = self
         v.font = .systemFont(ofSize: 17)
         v.isScrollEnabled = false
@@ -25,6 +26,7 @@ final class LHImageEditCell: UITableViewCell, LHEditCellProtocol, LHEditCellEdit
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
+        contentView.backgroundColor = EditToolConfig.shared.editorBackgroundColor
         imageTextV.translatesAutoresizingMaskIntoConstraints = false
         imV.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(imageTextV)

@@ -28,9 +28,10 @@ final class LHTitleEditCell: UITableViewCell, LHEditCellProtocol, LHEditCellEdit
         }
         titleTextView.delegate = self
         let cfg = EditToolConfig.shared
+        contentView.backgroundColor = cfg.editorBackgroundColor
         titleTextView.font = .systemFont(ofSize: cfg.titleFontSize)
         titleTextView.textColor = .darkGray
-        titleTextView.backgroundColor = .white
+        titleTextView.backgroundColor = cfg.textFieldBackgroundColor
         if cfg.lineSpacing != 0 {
             let sty = NSMutableParagraphStyle()
             sty.lineSpacing = cfg.lineSpacing

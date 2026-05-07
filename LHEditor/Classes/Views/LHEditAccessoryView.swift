@@ -32,7 +32,7 @@ final class LHEditAccessoryView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .white
+        backgroundColor = EditToolConfig.shared.accessoryBarBackgroundColor
         layer.borderWidth = 1
         layer.borderColor = UIColor.lightGray.cgColor
         pickImgBtn.translatesAutoresizingMaskIntoConstraints = false

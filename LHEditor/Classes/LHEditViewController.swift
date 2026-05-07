@@ -1,7 +1,5 @@
 import UIKit
 
-private let screenHeight = UIScreen.main.bounds.height
-
 public class LHEditViewController: UIViewController {
     public var insertImageEnabled = true
 
@@ -55,9 +53,20 @@ public class LHEditViewController: UIViewController {
         dataArray = array
     }
 
+    /// 修改 `EditToolConfig` 的背景色属性后调用，用于主题切换等场景。
+    public func reapplyBackgroundColorsFromConfig() {
+        let cfg = EditToolConfig.shared
+        let bg = cfg.editorBackgroundColor
+        view.backgroundColor = bg
+        tableView.backgroundColor = bg
+        accessoryView?.backgroundColor = cfg.accessoryBarBackgroundColor
+        tableView.reloadData()
+    }
+
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        let bg = EditToolConfig.shared.editorBackgroundColor
+        view.backgroundColor = bg
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         loadData()
@@ -79,6 +88,8 @@ public class LHEditViewController: UIViewController {
     }
 
     private func configTableView() {
+        let bg = EditToolConfig.shared.editorBackgroundColor
+        tableView.backgroundColor = bg
         tableView.contentInset = UIEdgeInsets(top: tableView.contentInset.top, left: 0, bottom: 70, right: 0)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
@@ -108,6 +119,8 @@ public class LHEditViewController: UIViewController {
         ])
         accessoryBottomToView = acc.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 50)
         accessoryBottomToView?.isActive = true
+        // 键盘未弹出时不展示，避免嵌入 TabBarController 时与系统 Tab 条视觉重叠。
+        acc.isHidden = true
     }
 
     private func ensureAccessory() -> LHEditAccessoryView? {
@@ -118,43 +131,52 @@ public class LHEditViewController: UIViewController {
         return accessoryView
     }
 
+    /// 键盘 frame 转到当前 `view` 坐标系，避免 TabBar / 子 VC 嵌入时仍按整屏高度推算导致附件条与键盘脱节。
+    private func keyboardEndFrameInSelfView(_ noti: Notification) -> CGRect? {
+        guard let v = noti.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return nil }
+        return view.convert(v.cgRectValue, from: UIScreen.main.coordinateSpace)
+    }
+
     @objc private func keyboardWillShow(_ noti: Notification) {
-        guard let info = noti.userInfo,
-              let frame = (info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
-              let duration = (info[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue
+        guard let duration = (noti.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue,
+              let kbInView = keyboardEndFrameInSelfView(noti)
         else { return }
 
-        let keyHeight = screenHeight - frame.origin.y
-        if keyHeight > 50, let acc = ensureAccessory() {
-            UIView.animate(withDuration: duration) {
-                self.tableView.contentInset = UIEdgeInsets(top: self.tableView.contentInset.top, left: 0, bottom: 70, right: 0)
-                self.accessoryBottomToView?.constant = -keyHeight
-                self.view.layoutIfNeeded()
-            }
+        view.layoutIfNeeded()
+        let viewH = view.bounds.height
+        guard kbInView.minY < viewH else { return }
+
+        let safeBottomY = viewH - view.safeAreaInsets.bottom
+        let rawTableConstant = kbInView.minY - safeBottomY
+        let tableConstant = min(0, rawTableConstant)
+        let hasAccessory = ensureAccessory() != nil
+        if hasAccessory {
+            accessoryView?.isHidden = false
         }
+
         UIView.animate(withDuration: duration) {
-            self.tableBottomToSafeArea.constant = -keyHeight
+            if hasAccessory {
+                self.tableView.contentInset = UIEdgeInsets(top: self.tableView.contentInset.top, left: 0, bottom: 70, right: 0)
+                self.accessoryBottomToView?.constant = kbInView.minY - viewH
+            }
+            self.tableBottomToSafeArea.constant = tableConstant
             self.view.layoutIfNeeded()
         }
     }
 
     @objc private func keyboardWillHide(_ noti: Notification) {
         if isDeletingImage { return }
-        guard let info = noti.userInfo,
-              let frame = (info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
-              let duration = (info[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue
+        guard let duration = (noti.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue
         else { return }
 
-        let keyHeight = screenHeight - frame.origin.y
-        if accessoryView != nil {
-            UIView.animate(withDuration: duration) {
+        accessoryView?.isHidden = true
+
+        UIView.animate(withDuration: duration) {
+            if self.accessoryView != nil {
                 self.tableView.contentInset = UIEdgeInsets(top: self.tableView.contentInset.top, left: 0, bottom: 50, right: 0)
                 self.accessoryBottomToView?.constant = 50
-                self.view.layoutIfNeeded()
             }
-        }
-        UIView.animate(withDuration: duration) {
-            self.tableBottomToSafeArea.constant = -keyHeight
+            self.tableBottomToSafeArea.constant = 0
             self.view.layoutIfNeeded()
         }
     }

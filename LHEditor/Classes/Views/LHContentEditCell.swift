@@ -30,6 +30,8 @@ final class LHContentEditCell: UITableViewCell, LHEditCellProtocol, LHEditCellEd
             contentTextView.isFindInteractionEnabled = false
         }
         let cfg = EditToolConfig.shared
+        contentView.backgroundColor = cfg.editorBackgroundColor
+        contentTextView.backgroundColor = cfg.textFieldBackgroundColor
         contentTextView.font = .systemFont(ofSize: cfg.textFontSize)
         contentTextView.delegate = self
         if cfg.lineSpacing != 0 {

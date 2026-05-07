@@ -1,13 +1,13 @@
 import UIKit
 
-protocol LHEditModelProtocol: AnyObject {
+public protocol LHEditModelProtocol: AnyObject {
     var cellHeight: CGFloat { get set }
     var cellReuseIdentifier: String { get }
     func applyPath(_ path: IndexPath)
 }
 
-extension LHEditModelProtocol {
-    func applyPath(_ path: IndexPath) {}
+public extension LHEditModelProtocol {
+    public func applyPath(_ path: IndexPath) {}
 }
 
 protocol LHEditCellProtocol: AnyObject {

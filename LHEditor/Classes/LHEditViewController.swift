@@ -3,7 +3,7 @@ import UIKit
 private let screenHeight = UIScreen.main.bounds.height
 
 public class LHEditViewController: UIViewController {
-    var insertImageEnabled = true
+    public var insertImageEnabled = true
 
     private lazy var tableView: UITableView = {
         let tv = UITableView()
@@ -35,15 +35,27 @@ public class LHEditViewController: UIViewController {
     private var tableBottomToSafeArea: NSLayoutConstraint!
     private var accessoryBottomToView: NSLayoutConstraint?
 
-    func getDataArray() -> [LHEditModelProtocol] {
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+
+    public required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
+    public convenience init() {
+        self.init(nibName: nil, bundle: nil)
+    }
+
+    public func getDataArray() -> [LHEditModelProtocol] {
         dataArray
     }
 
-    func setDataArray(_ array: [LHEditModelProtocol]) {
+    public func setDataArray(_ array: [LHEditModelProtocol]) {
         dataArray = array
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
